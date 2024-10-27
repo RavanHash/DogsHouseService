@@ -1,6 +1,6 @@
 @Dogshouseservice.Api_HostAddress = https://localhost:44334
 
-GET {{Dogshouseservice.Api_HostAddress}}/weatherforecast/
+GET {{Dogshouseservice.Api_HostAddress}}/dogs/
 Accept: application/json
 
 ###
