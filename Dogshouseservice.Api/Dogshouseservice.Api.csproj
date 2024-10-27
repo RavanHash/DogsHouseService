@@ -17,4 +17,8 @@
       <ProjectReference Include="..\Dogshouseservice.Infrastructure\Dogshouseservice.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Controllers\" />
+    </ItemGroup>
+
 </Project>
