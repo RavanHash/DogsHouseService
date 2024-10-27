@@ -1,4 +1,5 @@
-﻿using Dogshouseservice.Application.Services.Dogs;
+﻿using Dogshouseservice.Application.Common.Interfaces;
+using Dogshouseservice.Application.Services.Dogs;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Dogshouseservice.Application;

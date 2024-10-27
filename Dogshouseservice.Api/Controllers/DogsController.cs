@@ -1,5 +1,6 @@
-﻿using Dogshouseservice.Application.Services.Dogs;
+﻿using Dogshouseservice.Application.Common.Interfaces;
 using Dogshouseservice.Contracts.Dogs;
+using Dogshouseservice.Domain.Dogs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dogshouseservice.Api.Controllers;
@@ -14,18 +15,28 @@ public class DogsController : ControllerBase
     {
         _dogsService = dogsService;
     }
+    [HttpPost]
+    public IActionResult AddDog(AddDogRequest request)
+    {
+        _dogsService.AddDogAsync(request.Name,  request.Color, request.TailLength,  request.Weight);
+
+        return Ok();
+    }
 
     [HttpGet]
     public IActionResult GetDogs()
     {
-        var dogsResult = _dogsService.GetAllDogs();
+        var dogsResult = _dogsService.GetAllDogsAsync();
 
-        var response = new DogResponse(
-            dogsResult.Name,
-            dogsResult.Color,
-            dogsResult.TailLength,
-            dogsResult.Weight);
-
+        List<DogResponse> response = new();
+        foreach (var dog in dogsResult)
+        {
+            response.Add(new DogResponse(
+                dog.Name,
+                dog.Color,
+                dog.TailLength,
+                dog.Weight));
+        }
         return Ok(response);
     }
 }
