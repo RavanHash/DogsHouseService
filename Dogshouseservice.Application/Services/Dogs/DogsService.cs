@@ -1,5 +1,7 @@
 ﻿using Dogshouseservice.Application.Common.Interfaces;
+using Dogshouseservice.Domain.Common.Errors;
 using Dogshouseservice.Domain.Dogs;
+using ErrorOr;
 
 namespace Dogshouseservice.Application.Services.Dogs;
 
@@ -12,9 +14,14 @@ public class DogsService : IDogsService
         _dogsRepository = dogsRepository;
     }
 
-    public void AddDogAsync(string name, string color, int tailLength, int weight)
+    public ErrorOr<DogsResult> AddDogAsync(string name, string color, int tailLength, int weight)
     {
         // check if exist
+
+        if (tailLength < 0)
+        {
+            return Errors.Dog.TailLenghtIsNegative;
+        }
 
         var dog = new Dog
         {
@@ -25,6 +32,10 @@ public class DogsService : IDogsService
         };
 
         _dogsRepository.AddAsync(dog);
+
+        var dogRes = new DogsResult ( dog.Name, dog.Color, dog.TailLength, dog.Weight );
+
+        return dogRes;
     }
 
     public List<Dog> GetAllDogsAsync()

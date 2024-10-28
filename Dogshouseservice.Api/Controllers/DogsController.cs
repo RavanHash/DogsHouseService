@@ -18,9 +18,9 @@ public class DogsController : ControllerBase
     [HttpPost]
     public IActionResult AddDog(AddDogRequest request)
     {
-        _dogsService.AddDogAsync(request.Name,  request.Color, request.TailLength,  request.Weight);
+        var res = _dogsService.AddDogAsync(request.Name,  request.Color, request.TailLength,  request.Weight);
 
-        return Ok();
+        return res.MatchFirst(res => Ok(res), firstError => Problem(statusCode: StatusCodes.Status400BadRequest, title: firstError.Description));
     }
 
     [HttpGet]
