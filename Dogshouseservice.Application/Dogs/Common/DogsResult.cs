@@ -1,4 +1,4 @@
-﻿namespace Dogshouseservice.Application.Services.Dogs;
+﻿namespace Dogshouseservice.Application.Dogs.Common;
 
 public record DogsResult(
     string Name,

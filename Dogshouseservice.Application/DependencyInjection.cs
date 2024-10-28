@@ -1,6 +1,4 @@
-﻿using Dogshouseservice.Application.Common.Interfaces;
-using Dogshouseservice.Application.Services.Dogs;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Dogshouseservice.Application;
 
@@ -8,8 +6,8 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        services.AddScoped<IDogsService, DogsService>();
-
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly));
+        
         return services;
     }
 }

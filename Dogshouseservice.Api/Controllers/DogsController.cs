@@ -1,29 +1,36 @@
-﻿using Dogshouseservice.Application.Common.Interfaces;
+﻿using Dogshouseservice.Application.Dogs.Commands.AddDog;
+using Dogshouseservice.Application.Dogs.Queries.GetDogs;
 using Dogshouseservice.Contracts.Dogs;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dogshouseservice.Api.Controllers;
 
 public class DogsController : ApiController
 {
-    private readonly IDogsService _dogsService;
+    private readonly ISender _mediator;
 
-    public DogsController(IDogsService dogsService)
+    public DogsController(IMediator mediator)
     {
-        _dogsService = dogsService;
+        _mediator = mediator;
     }
+
     [HttpPost]
-    public IActionResult AddDog(AddDogRequest request)
+    public async Task<IActionResult> AddDog(AddDogRequest request)
     {
-        var res = _dogsService.AddDogAsync(request.Name,  request.Color, request.TailLength,  request.Weight);
+        var command = new AddDogCommand(request.Name, request.Color, request.TailLength, request.Weight);
+        
+        var res = await _mediator.Send(command);
 
         return res.Match(res => Ok(res), errors => Problem(errors));
     }
 
     [HttpGet]
-    public IActionResult GetDogs()
+    public async Task<IActionResult> GetDogs()
     {
-        var dogsResult = _dogsService.GetAllDogsAsync();
+        var query = new GetDogsQuery();
+        
+        var dogsResult = await _mediator.Send(query);
 
         List<DogResponse> response = new();
         foreach (var dog in dogsResult)
