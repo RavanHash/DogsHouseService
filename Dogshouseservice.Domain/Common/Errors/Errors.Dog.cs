@@ -6,6 +6,7 @@ public static class Errors
 {
     public static class Dog
     {
-        public static Error TailLenghtIsNegative => Error.Validation(code: "Dog.TailLenghtIsNegative", description:"Tail lenght can't be negative.");
+        // Todo: move to validation
+        public static Error TailLengthIsNegative => Error.Validation(code: "Dog.TailLengthIsNegative", description:"Tail length can't be negative.");
     }
 }

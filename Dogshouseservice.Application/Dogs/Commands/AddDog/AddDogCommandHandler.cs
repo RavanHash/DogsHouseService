@@ -12,11 +12,11 @@ public class AddDogCommandHandler(IDogsRepository dogsRepository) : IRequestHand
 {
     public async Task<ErrorOr<DogsResult>> Handle(AddDogCommand command, CancellationToken cancellationToken)
     {
-        // check if exist
+        // Todo: check if exist and return error
 
         if (command.TailLength < 0)
         {
-            return Errors.Dog.TailLenghtIsNegative;
+            return Errors.Dog.TailLengthIsNegative;
         }
 
         var dog = new Dog
