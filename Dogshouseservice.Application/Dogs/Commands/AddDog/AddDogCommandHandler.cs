@@ -10,13 +10,13 @@ namespace Dogshouseservice.Application.Dogs.Commands.AddDog;
 
 public class AddDogCommandHandler(IDogsRepository dogsRepository) : IRequestHandler<AddDogCommand, ErrorOr<DogsResult>>
 {
-    public async Task<ErrorOr<DogsResult>> Handle(AddDogCommand command, CancellationToken cancellationToken)
+    public async Task<ErrorOr<DogsResult>> Handle(
+        AddDogCommand command,
+        CancellationToken cancellationToken)
     {
-        // Todo: check if exist and return error
-
-        if (command.TailLength < 0)
+        if (await dogsRepository.ExistsAsync(command.Name))
         {
-            return Errors.Dog.TailLengthIsNegative;
+            return Errors.Dog.NameAlreadyExists;
         }
 
         var dog = new Dog
@@ -27,10 +27,14 @@ public class AddDogCommandHandler(IDogsRepository dogsRepository) : IRequestHand
             Weight = command.Weight
         };
 
-        dogsRepository.AddAsync(dog);
+        await dogsRepository.AddAsync(dog);
 
-        var dogRes = new DogsResult ( dog.Name, dog.Color, dog.TailLength, dog.Weight );
+        var dogRes = new DogsResult(
+            dog.Name,
+            dog.Color,
+            dog.TailLength,
+            dog.Weight);
 
-        return dogRes; 
+        return dogRes;
     }
 }

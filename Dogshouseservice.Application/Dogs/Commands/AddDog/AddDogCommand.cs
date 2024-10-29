@@ -1,4 +1,3 @@
-using Dogshouseservice.Application.Common;
 using Dogshouseservice.Application.Dogs.Common;
 using ErrorOr;
 using MediatR;

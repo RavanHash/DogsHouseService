@@ -6,41 +6,45 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dogshouseservice.Api.Controllers;
 
-public class DogsController : ApiController
+public class DogsController(ISender mediator) : ApiController
 {
-    private readonly ISender _mediator;
-
-    public DogsController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-
     [HttpPost]
-    public async Task<IActionResult> AddDog(AddDogRequest request)
+    public async Task<IActionResult> AddDog([FromBody] AddDogRequest request)
     {
-        var command = new AddDogCommand(request.Name, request.Color, request.TailLength, request.Weight);
-        
-        var res = await _mediator.Send(command);
+        var command = new AddDogCommand(
+            request.Name,
+            request.Color,
+            request.TailLength,
+            request.Weight);
 
-        return res.Match(res => Ok(res), errors => Problem(errors));
+        var result = await mediator.Send(command);
+
+        return result.Match(
+            res => Ok(res),
+            errors => Problem(errors));
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetDogs()
+    public async Task<IActionResult> GetDogs(
+        [FromQuery] int? pageNumber,
+        [FromQuery] int? pageSize,
+        [FromQuery] string? attribute,
+        [FromQuery] string? order)
     {
-        var query = new GetDogsQuery();
-        
-        var dogsResult = await _mediator.Send(query);
+        var query = new GetDogsQuery(
+            pageNumber,
+            pageSize,
+            attribute,
+            order);
 
-        List<DogResponse> response = new();
-        foreach (var dog in dogsResult)
-        {
-            response.Add(new DogResponse(
-                dog.Name,
-                dog.Color,
-                dog.TailLength,
-                dog.Weight));
-        }
+        var dogs = await mediator.Send(query);
+
+        var response = dogs.Select(dog => new DogResponse(
+            dog.Name,
+            dog.Color,
+            dog.TailLength,
+            dog.Weight)).ToList();
+
         return Ok(response);
     }
 }

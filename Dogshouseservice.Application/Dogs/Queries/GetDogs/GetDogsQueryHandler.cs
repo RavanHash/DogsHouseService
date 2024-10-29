@@ -6,8 +6,14 @@ namespace Dogshouseservice.Application.Dogs.Queries.GetDogs;
 
 public class GetDogsQueryHandler(IDogsRepository dogsRepository) : IRequestHandler<GetDogsQuery, List<Dog>>
 {
-    public async Task<List<Dog>> Handle(GetDogsQuery request, CancellationToken cancellationToken)
+    public async Task<List<Dog>> Handle(
+        GetDogsQuery request,
+        CancellationToken cancellationToken)
     {
-        return dogsRepository.GetAllAsync();
+        return await dogsRepository.GetDogsAsync(
+            request.PageNumber,
+            request.PageSize,
+            request.Attribute,
+            request.Order);
     }
 }

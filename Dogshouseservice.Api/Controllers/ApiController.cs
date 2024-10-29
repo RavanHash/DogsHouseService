@@ -1,12 +1,14 @@
 using ErrorOr;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Dogshouseservice.Api.Controllers;
 
 
 [ApiController]
 [Route("[controller]")]
+[EnableRateLimiting("Fixed")]
 public class ApiController : ControllerBase
 {
     protected IActionResult Problem(List<Error> errors)

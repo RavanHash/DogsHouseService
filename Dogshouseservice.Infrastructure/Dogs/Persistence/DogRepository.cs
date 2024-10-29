@@ -1,19 +1,59 @@
 ﻿using Dogshouseservice.Application.Common.Interfaces;
 using Dogshouseservice.Domain.Dogs;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dogshouseservice.Infrastructure.Dogs.Persistence;
 
-public class DogRepository : IDogsRepository
+public class DogRepository(AppDbContext context) : IDogsRepository
 {
-    private static readonly List<Dog> _dogsList = new();
-
-    public void AddAsync(Dog dog)
+    public async Task AddAsync(Dog dog)
     {
-        _dogsList.Add(dog);
+        context.Dogs.Add(dog);
+        await context.SaveChangesAsync();
     }
 
-    public List<Dog> GetAllAsync()
+    public async Task<List<Dog>> GetAllAsync()
     {
-        return _dogsList;
+        return await context.Dogs.ToListAsync();
+    }
+
+    public async Task<bool> ExistsAsync(string name)
+    {
+        return await context.Dogs.AnyAsync(d => d.Name == name);
+    }
+
+    public async Task<List<Dog>> GetDogsAsync(
+        int? pageNumber,
+        int? pageSize,
+        string? attribute,
+        string? order)
+    {
+        var query = context.Dogs.AsQueryable();
+
+        if (!string.IsNullOrEmpty(attribute))
+        {
+            query = attribute.ToLower() switch
+            {
+                "name" => order == "desc"
+                    ? query.OrderByDescending(d => d.Name)
+                    : query.OrderBy(d => d.Name),
+                "color" => order == "desc"
+                    ? query.OrderByDescending(d => d.Color)
+                    : query.OrderBy(d => d.Color),
+                "taillength" => order == "desc"
+                    ? query.OrderByDescending(d => d.TailLength)
+                    : query.OrderBy(d => d.TailLength),
+                "weight" => order == "desc"
+                    ? query.OrderByDescending(d => d.Weight)
+                    : query.OrderBy(d => d.Weight),
+                _ => query
+            };
+        }
+
+        if (!pageNumber.HasValue || !pageSize.HasValue) return await query.ToListAsync();
+        var skip = (pageNumber.Value - 1) * pageSize.Value;
+        query = query.Skip(skip).Take(pageSize.Value);
+
+        return await query.ToListAsync();
     }
 }

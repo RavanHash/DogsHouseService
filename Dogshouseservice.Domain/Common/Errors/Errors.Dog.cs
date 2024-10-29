@@ -6,7 +6,8 @@ public static class Errors
 {
     public static class Dog
     {
-        // Todo: move to validation
-        public static Error TailLengthIsNegative => Error.Validation(code: "Dog.TailLengthIsNegative", description:"Tail length can't be negative.");
+        public static Error NameAlreadyExists => Error.Conflict(
+            code: "Dog.NameAlreadyExists",
+            description: "A dog with this name already exists.");
     }
 }
