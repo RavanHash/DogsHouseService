@@ -1,4 +1,5 @@
 ﻿using Dogshouseservice.Application.Common.Interfaces;
+using Dogshouseservice.Infrastructure.Common;
 using Dogshouseservice.Infrastructure.Dogs.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +15,7 @@ public static class DependencyInjection
             options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
 
         services.AddScoped<IDogsRepository, DogRepository>();
+        services.AddScoped<IVersionService, VersionService>();
 
         return services;
     }

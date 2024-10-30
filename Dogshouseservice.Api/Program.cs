@@ -39,7 +39,7 @@ builder.Services.AddApiVersioning(options =>
 var rateLimitingOptions = builder.Configuration.GetSection("RateLimiting").Get<RateLimitingOptions>();
 builder.Services.AddRateLimiter(options =>
 {
-    options.AddFixedWindowLimiter(policyName: "Fixed", limiterOptions =>
+    options.AddFixedWindowLimiter("Fixed", limiterOptions =>
     {
         if (rateLimitingOptions != null)
         {
@@ -59,6 +59,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseRateLimiter();

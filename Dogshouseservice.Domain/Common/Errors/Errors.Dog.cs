@@ -7,7 +7,7 @@ public static class Errors
     public static class Dog
     {
         public static Error NameAlreadyExists => Error.Conflict(
-            code: "Dog.NameAlreadyExists",
-            description: "A dog with this name already exists.");
+            "Dog.NameAlreadyExists",
+            "A dog with this name already exists.");
     }
 }

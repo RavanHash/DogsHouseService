@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace Dogshouseservice.Api.Controllers;
 
-
 [ApiController]
 [Route("[controller]")]
 [EnableRateLimiting("Fixed")]
@@ -17,7 +16,7 @@ public class ApiController : ControllerBase
         {
             return Problem();
         }
-        
+
         return errors.All(error => error.Type == ErrorType.Validation) ? ValidationProblem(errors) : Problem(errors[0]);
     }
 
@@ -42,7 +41,7 @@ public class ApiController : ControllerBase
         {
             modelStateDictionary.AddModelError(error.Code, error.Description);
         }
-            
+
         return ValidationProblem(modelStateDictionary);
     }
 }

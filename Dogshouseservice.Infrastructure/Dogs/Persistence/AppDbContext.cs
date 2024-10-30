@@ -3,14 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dogshouseservice.Infrastructure.Dogs.Persistence;
 
-public class AppDbContext : DbContext
+public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
     public DbSet<Dog> Dogs { get; set; } = null!;
-
-    public AppDbContext(DbContextOptions<AppDbContext> options)
-        : base(options)
-    {
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -68,7 +63,7 @@ public class AppDbContext : DbContext
             new Dog { Name = "Koda", Color = "golden", TailLength = 18, Weight = 28 },
             new Dog { Name = "Marley", Color = "white & red", TailLength = 10, Weight = 19 }
         );
-        
+
         base.OnModelCreating(modelBuilder);
     }
 }

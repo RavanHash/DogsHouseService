@@ -1,4 +1,3 @@
-using Dogshouseservice.Application.Common;
 using Dogshouseservice.Application.Common.Interfaces;
 using Dogshouseservice.Application.Dogs.Common;
 using Dogshouseservice.Domain.Common.Errors;

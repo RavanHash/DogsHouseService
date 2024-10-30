@@ -1,8 +1,6 @@
-﻿using System.Text.Json;
-using Dogshouseservice.Application.Dogs.Commands.AddDog;
+﻿using Dogshouseservice.Application.Dogs.Commands.AddDog;
 using Dogshouseservice.Application.Dogs.Queries.GetDogs;
 using Dogshouseservice.Contracts.Dogs;
-using Dogshouseservice.Domain.Common.Errors;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,36 +8,21 @@ namespace Dogshouseservice.Api.Controllers;
 
 public class DogsController(ISender mediator) : ApiController
 {
-    [HttpPost]
+    [HttpPost("/dog")]
     public async Task<IActionResult> AddDog([FromBody] AddDogRequest request)
     {
-        try
-        {
-            var command = new AddDogCommand(
-                request.Name,
-                request.Color,
-                request.TailLength,
-                request.Weight);
+        var command = new AddDogCommand(
+            request.Name,
+            request.Color,
+            request.TailLength,
+            request.Weight);
 
-            var result = await mediator.Send(command);
-            
-            if (result.IsError && result.FirstError == Errors.Dog.NameAlreadyExists)
-            {
-                return Conflict(new { message = result.FirstError.Description });
-            }
+        var result = await mediator.Send(command);
 
-            return result.Match(
-                res => Ok(res),
-                errors => Problem(errors));
-        }
-        catch (JsonException)
-        {
-            return BadRequest("Invalid JSON in request body.");
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, "An unexpected error occurred.");
-        }
+        return result.Match(
+            res => Ok(res),
+            errors => Problem(errors)
+        );
     }
 
     [HttpGet]

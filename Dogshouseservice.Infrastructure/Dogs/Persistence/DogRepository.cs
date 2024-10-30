@@ -32,18 +32,19 @@ public class DogRepository(AppDbContext context) : IDogsRepository
 
         if (!string.IsNullOrEmpty(attribute))
         {
+            var sortOrder = (order ?? "asc").ToLower();
             query = attribute.ToLower() switch
             {
-                "name" => order == "desc"
+                "name" => sortOrder == "desc"
                     ? query.OrderByDescending(d => d.Name)
                     : query.OrderBy(d => d.Name),
-                "color" => order == "desc"
+                "color" => sortOrder == "desc"
                     ? query.OrderByDescending(d => d.Color)
                     : query.OrderBy(d => d.Color),
-                "taillength" => order == "desc"
+                "taillength" => sortOrder == "desc"
                     ? query.OrderByDescending(d => d.TailLength)
                     : query.OrderBy(d => d.TailLength),
-                "weight" => order == "desc"
+                "weight" => sortOrder == "desc"
                     ? query.OrderByDescending(d => d.Weight)
                     : query.OrderBy(d => d.Weight),
                 _ => query

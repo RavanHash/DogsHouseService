@@ -16,14 +16,30 @@ public class GetDogsValidator : AbstractValidator<GetDogsQuery>
             .When(x => x.PageSize.HasValue)
             .WithMessage("Page size must be greater than zero.");
 
-        RuleFor(x => x.Attribute!.ToLower())
-            .Must(attr => new[] { "name", "color", "taillength", "weight" }.Contains(attr.ToLower()))
-            .When(x => !string.IsNullOrEmpty(x.Attribute))
+        RuleFor(x => x.PageNumber)
+            .NotNull()
+            .When(x => x.PageSize.HasValue)
+            .WithMessage("PageNumber must be provided when PageSize is specified.");
+
+        RuleFor(x => x.PageSize)
+            .NotNull()
+            .When(x => x.PageNumber.HasValue)
+            .WithMessage("PageSize must be provided when PageNumber is specified.");
+
+        RuleFor(x => x.Attribute)
+            .Must(attr =>
+            {
+                if (string.IsNullOrEmpty(attr))
+                    return true;
+
+                var lowerAttr = attr.ToLower();
+                return new[] { "name", "color", "taillength", "weight" }.Contains(lowerAttr);
+            })
             .WithMessage("Invalid attribute for sorting.");
 
         RuleFor(x => x.Order!.ToLower())
             .Must(order => order.Equals("asc", StringComparison.OrdinalIgnoreCase) || order.Equals("desc", StringComparison.OrdinalIgnoreCase))
             .When(x => !string.IsNullOrEmpty(x.Order))
             .WithMessage("Order must be 'asc' or 'desc'.");
-    } 
+    }
 }

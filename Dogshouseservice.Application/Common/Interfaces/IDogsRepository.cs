@@ -2,11 +2,12 @@
 
 namespace Dogshouseservice.Application.Common.Interfaces;
 
-public interface  IDogsRepository
+public interface IDogsRepository
 {
     Task AddAsync(Dog dog);
     Task<List<Dog>> GetAllAsync();
     Task<bool> ExistsAsync(string name);
+
     Task<List<Dog>> GetDogsAsync(
         int? pageNumber,
         int? pageSize,
