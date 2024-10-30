@@ -37,9 +37,33 @@ public class GetDogsValidator : AbstractValidator<GetDogsQuery>
             })
             .WithMessage("Invalid attribute for sorting.");
 
-        RuleFor(x => x.Order!.ToLower())
-            .Must(order => order.Equals("asc", StringComparison.OrdinalIgnoreCase) || order.Equals("desc", StringComparison.OrdinalIgnoreCase))
+        RuleFor(x => x.Attribute)
+            .Cascade(CascadeMode.Stop)
+            .NotEmpty()
             .When(x => !string.IsNullOrEmpty(x.Order))
-            .WithMessage("Order must be 'asc' or 'desc'.");
+            .WithMessage("Attribute must be provided when Order is specified.")
+            .Must(attr =>
+            {
+                if (string.IsNullOrEmpty(attr))
+                    return true;
+
+                var lowerAttr = attr.ToLower();
+                return new[] { "name", "color", "taillength", "weight" }.Contains(lowerAttr);
+            })
+            .WithMessage("Invalid attribute for sorting.");
+
+        RuleFor(x => x.Order)
+            .Must((query, order) =>
+            {
+                if (string.IsNullOrEmpty(order))
+                    return true;
+
+                if (string.IsNullOrEmpty(query.Attribute))
+                    return false;
+
+                return order.Equals("asc", StringComparison.OrdinalIgnoreCase) ||
+                       order.Equals("desc", StringComparison.OrdinalIgnoreCase);
+            })
+            .WithMessage("Order must be 'asc' or 'desc', and Attribute must be provided when Order is specified.");
     }
 }

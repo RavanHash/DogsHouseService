@@ -20,7 +20,7 @@ public class DogsController(ISender mediator) : ApiController
         var result = await mediator.Send(command);
 
         return result.Match(
-            res => Ok(res),
+            res => Created($"/dogs/{res.Name}", res),
             errors => Problem(errors)
         );
     }
